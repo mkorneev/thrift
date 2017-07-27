@@ -354,7 +354,7 @@ private:
   bool use_option_type_;
   bool undated_generated_annotations_;
   bool suppress_generated_annotations_;
-  
+
 };
 
 /**
@@ -412,7 +412,7 @@ string t_java_generator::java_type_imports() {
   }
 
   if (use_option_type_) {
-    option = string() + "import org.apache.thrift.Option;\n";
+    option = string() + "import java.util.Optional;\n";
   }
 
   // android does not support @Generated Annotation
@@ -2162,17 +2162,17 @@ void t_java_generator::generate_java_bean_boilerplate(ofstream& out, t_struct* t
     if (type->is_container()) {
       // Method to return the size of the collection
       if (optional) {
-        indent(out) << "public Option<Integer> get" << cap_name;
+        indent(out) << "public Optional<Integer> get" << cap_name;
         out << get_cap_name("size() {") << endl;
 
         indent_up();
         indent(out) << "if (this." << field_name << " == null) {" << endl;
         indent_up();
-        indent(out) << "return Option.none();" << endl;
+        indent(out) << "return Optional.empty();" << endl;
         indent_down();
         indent(out) << "} else {" << endl;
         indent_up();
-        indent(out) << "return Option.some(this." << field_name << ".size());" << endl;
+        indent(out) << "return Optional.of(this." << field_name << ".size());" << endl;
         indent_down();
         indent(out) << "}" << endl;
         indent_down();
@@ -2199,18 +2199,18 @@ void t_java_generator::generate_java_bean_boilerplate(ofstream& out, t_struct* t
 
       // Iterator getter for sets and lists
       if (optional) {
-        indent(out) << "public Option<java.util.Iterator<" << type_name(element_type, true, false)
+        indent(out) << "public Optional<java.util.Iterator<" << type_name(element_type, true, false)
                     << ">> get" << cap_name;
         out << get_cap_name("iterator() {") << endl;
 
         indent_up();
         indent(out) << "if (this." << field_name << " == null) {" << endl;
         indent_up();
-        indent(out) << "return Option.none();" << endl;
+        indent(out) << "return Optional.empty();" << endl;
         indent_down();
         indent(out) << "} else {" << endl;
         indent_up();
-        indent(out) << "return Option.some(this." << field_name << ".iterator());" << endl;
+        indent(out) << "return Optional.of(this." << field_name << ".iterator());" << endl;
         indent_down();
         indent(out) << "}" << endl;
         indent_down();
@@ -2281,7 +2281,7 @@ void t_java_generator::generate_java_bean_boilerplate(ofstream& out, t_struct* t
       indent(out) << "}" << endl << endl;
     } else {
       if (optional) {
-        indent(out) << "public Option<" << type_name(type, true) << ">";
+        indent(out) << "public Optional<" << type_name(type, true) << ">";
         if (type->is_base_type() && ((t_base_type*)type)->get_base() == t_base_type::TYPE_BOOL) {
           out << " is";
         } else {
@@ -2292,11 +2292,11 @@ void t_java_generator::generate_java_bean_boilerplate(ofstream& out, t_struct* t
 
         indent(out) << "if (this.isSet" << cap_name << "()) {" << endl;
         indent_up();
-        indent(out) << "return Option.some(this." << field_name << ");" << endl;
+        indent(out) << "return Optional.of(this." << field_name << ");" << endl;
         indent_down();
         indent(out) << "} else {" << endl;
         indent_up();
-        indent(out) << "return Option.none();" << endl;
+        indent(out) << "return Optional.empty();" << endl;
         indent_down();
         indent(out) << "}" << endl;
         indent_down();
