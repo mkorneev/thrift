@@ -948,15 +948,14 @@ void t_java_generator::generate_union_getters_and_setters(ofstream& out, t_struc
       indent(out) << "  }" << endl;
       indent(out) << "}" << endl;
     } else {
-      indent(out) << "public " << type_name(field->get_type()) << " get"
+      indent(out) << "public Optional<" << type_name(field->get_type(), true, false, true) << "> get"
                   << get_cap_name(field->get_name()) << "() {" << endl;
       indent(out) << "  if (getSetField() == _Fields." << constant_name(field->get_name()) << ") {"
                   << endl;
-      indent(out) << "    return (" << type_name(field->get_type(), true) << ")getFieldValue();"
+      indent(out) << "    return Optional.of((" << type_name(field->get_type(), true, false, true) << ")getFieldValue());"
                   << endl;
       indent(out) << "  } else {" << endl;
-      indent(out) << "    throw new RuntimeException(\"Cannot get field '" << field->get_name()
-                  << "' because union is currently set to \" + getFieldDesc(getSetField()).name);"
+      indent(out) << "    return Optional.empty();"
                   << endl;
       indent(out) << "  }" << endl;
       indent(out) << "}" << endl;
